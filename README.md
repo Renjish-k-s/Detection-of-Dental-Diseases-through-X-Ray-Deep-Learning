@@ -4,7 +4,7 @@
 
 This project implements a deep learning pipeline to classify dental radiographs into four distinct pathology classes: **Cavity**, **Implant**, **Filling**, and **Impacted Tooth**. Utilizing the power of **NASNetLarge**, a state-of-the-art convolutional neural network architecture, the model aims to assist dental professionals with automatic diagnosis through accurate and scalable image classification.
 
-Our approach leverages the **NASNetLarge** model, pretrained on ImageNet, fine-tuned on a curated dataset of over **8000 labeled dental radiographs** to ensure high diagnostic relevance and performance.
+Our approach leverages the **NASNetLarge** model, pretrained on ImageNet, fine-tuned on a curated dataset of over **8000 labeled dental radiographs** to ensure high diagnostic relevance and performance.(if need this full project contact through linked in price NEGOTIABLE)
 
 ---
 
