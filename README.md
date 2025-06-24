@@ -169,7 +169,6 @@ Explore multi-label classification (if multiple pathologies in one image)
 👨‍💻 Contributors
 Renjish K S – Deep Learning Developer, MCA Student
 
-Safar Yasin Shajahan – Co-researcher, Deep Learning Enthusiast
 
 This work was done as part of an academic deep learning project and our research paper has been published via Compodium.
 
