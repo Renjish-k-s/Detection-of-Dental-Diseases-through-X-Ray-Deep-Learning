@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentAI - Dental Image Classification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #212529;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .bg-shape {
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 40%;
+            height: 70%;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.03) 100%);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            z-index: -1;
+            animation: morphing 15s ease-in-out infinite;
+        }
+        
+        .bg-shape-2 {
+            position: absolute;
+            bottom: -10%;
+            left: -5%;
+            width: 40%;
+            height: 60%;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.08) 0%, rgba(13, 110, 253, 0.01) 100%);
+            border-radius: 60% 40% 30% 70% / 50% 40% 60% 40%;
+            z-index: -1;
+            animation: morphing 15s ease-in-out infinite alternate;
+        }
+        
+        @keyframes morphing {
+            0% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+            50% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            }
+            100% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+        }
+        
+        header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0d6efd;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: #212529;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 32px;
+            color: #0d6efd;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        h2 {
+            color: #212529;
+            margin-bottom: 30px;
+            font-size: 28px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: #0d6efd;
+            border-radius: 3px;
+        }
+        
+        h3 {
+            color: #495057;
+            margin: 30px 0 15px;
+            font-size: 20px;
+        }
+        
+        .upload-container {
+            background: #f8f9fa;
+            border: 2px dashed #ced4da;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-container:hover {
+            border-color: #0d6efd;
+            background: #f1f8ff;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-label {
+            background: white;
+            color: #495057;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .file-label:hover {
+            background: #f1f8ff;
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+        
+        .file-label svg {
+            margin-right: 8px;
+        }
+        
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        button[type="submit"] {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(13, 110, 253, 0.15);
+        }
+        
+        button[type="submit"]:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2);
+        }
+        
+        .result-container {
+            margin-top: 40px;
+            border-top: 1px solid #e9ecef;
+            padding-top: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .image-container {
+            position: relative;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+        
+        .prediction-result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .prediction-result strong {
+            color: #0d6efd;
+            font-size: 22px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .confidence-badge {
+            display: inline-block;
+            background: #e7f5ff;
+            color: #0d6efd;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: none;
+        }
+        
+        th {
+            background: #f1f8ff;
+            color: #495057;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tr:hover {
+            background: #f1f8ff;
+        }
+        
+        td {
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .confidence-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            position: relative;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+            border-radius: 4px;
+        }
+        
+        .ai-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ai-badge svg {
+            margin-right: 5px;
+        }
+        
+        .pulse-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background: rgba(13, 110, 253, 0.1);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0.5;
+            }
+        }
+        
+        .teeth-icon {
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .upload-container {
+                padding: 20px;
+            }
+            
+            button[type="submit"] {
+                padding: 12px 25px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shape"></div>
+    <div class="bg-shape-2"></div>
+    
+    <header>
+        <div class="logo">
+            <span class="logo-icon">&#9679;</span> Dent<span>AI</span>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="teeth-icon">
+            <!-- SVG Tooth Icon -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50,10 C65,10 80,15 80,40 C80,65 75,90 65,90 C60,90 55,75 50,75 C45,75 40,90 35,90 C25,90 20,65 20,40 C20,15 35,10 50,10 Z" fill="currentColor"/>
+            </svg>
+        </div>
+        
+        <div class="ai-badge">
+            <!-- AI Icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Powered by AI
+        </div>
+        
+        <h2>Upload an OPG Image for Classification</h2>
+        
+        <div class="upload-container">
+            <form method="post" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                <input type="file" name="image" id="file-input" required accept="image/*">
+                <label for="file-input" class="file-label">
+                    <!-- Upload Icon -->
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Choose Dental Image
+                </label>
+                <div class="file-name" id="file-name">No file selected</div>
+                <button type="submit">Predict Classification</button>
+            </form>
+            <div class="pulse-animation"></div>
+        </div>
+        
+        {% if uploaded_image %}
+        <div class="result-container">
+            <h3>Uploaded Image</h3>
+            <div class="image-container">
+                <img src="{{ uploaded_image }}" alt="Uploaded Dental OPG">
+            </div>
+            
+            <h3>AI Prediction Result</h3>
+            <div class="prediction-result">
+                <strong>{{ prediction }}</strong>
+                <div class="confidence-badge">Confidence: {{ confidence_score }}%</div>
+            </div>
+            
+            <h3>Detailed Analysis</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classification</th>
+                        <th>Confidence (%)</th>
+                        <th>Visualization</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class_name, score in class_confidences.items %}
+                    <tr>
+                        <td>{{ class_name }}</td>
+                        <td width="100">{{ score }}</td>
+                        <td>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: {{ score }}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        // Script to show selected filename
+        document.getElementById('file-input').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+            document.getElementById('file-name').textContent = fileName;
+        });
+    </script>
+</body>
+</html>
