@@ -27,7 +27,7 @@ To develop a **robust, scalable, and high-accuracy dental pathology classificati
 
 ## 🧰 Dataset
 
-**Source**: [Kaggle - Dental Radiograph Dataset](https://www.kaggle.com/datasets/imtkaggleteam/dental-radiograph)
+**Source**: [Kaggle - Dental Radiograph Dataset](https://www.kaggle.com/datasets/imtkaggleteam/dental-radiography)
 
 - Total Images: ~8000+
 - Format: JPEG/PNG
@@ -56,6 +56,7 @@ Each folder contains:
 - Pretrained on ImageNet, suitable for transfer learning
 
 ---
+**Source**: [Kaggle - Dental Radiograph model link ](https://drive.google.com/file/d/1Z_ZN06oUrUPwZwBh2Oeu_Jxi90h8opvr/view?usp=sharing)
 
 ## 🏗️ Project Structure
 
