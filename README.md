@@ -56,7 +56,7 @@ Each folder contains:
 - Pretrained on ImageNet, suitable for transfer learning
 
 ---
-**Source**: [Kaggle - Dental Radiograph model link ](https://drive.google.com/file/d/1Z_ZN06oUrUPwZwBh2Oeu_Jxi90h8opvr/view?usp=sharing)
+**Source**: [Google drive - Dental Radiograph model link ](https://drive.google.com/file/d/1Z_ZN06oUrUPwZwBh2Oeu_Jxi90h8opvr/view?usp=sharing)
 
 ## 🏗️ Project Structure
 
